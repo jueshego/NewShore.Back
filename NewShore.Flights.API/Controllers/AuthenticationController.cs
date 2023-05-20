@@ -18,19 +18,19 @@ namespace NewShore.Flights.API.Controllers
             _config = config;
         }
 
-        [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate()
+        [HttpGet("authenticate/{user}")]
+        public async Task<IActionResult> Authenticate(string user)
         {
-            string strToken = GenerateToken();
+            string strToken = GenerateToken(user);
 
-            return Ok(new { token = strToken });
+            return Ok(new { user = user, token = strToken });
         }
 
-        private string GenerateToken()
+        private string GenerateToken(string user)
         {
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, "user")
+                new Claim(ClaimTypes.Name, user),
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("JWT:Key").Value));

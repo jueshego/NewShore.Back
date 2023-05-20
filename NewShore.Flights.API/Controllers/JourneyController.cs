@@ -7,7 +7,7 @@ using System.Net.Http;
 
 namespace NewShore.Flights.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class JourneyController : ControllerBase
@@ -21,7 +21,7 @@ namespace NewShore.Flights.API.Controllers
             _logger = logger;
         }
 
-        [HttpGet("From/{origin}/to/{destination}")]
+        [HttpGet("from/{origin}/to/{destination}")]
         public async Task<ActionResult<List<DTOJourneyResponse>>> Get(string origin, string destination)
         {
             _logger.Debug($"Entrando al API/Journeys GET con parametros: {origin} - {destination}");

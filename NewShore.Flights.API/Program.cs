@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NewShore.Flights.API.Middlewares;
 using NewShore.Flights.Application.Contracts;
@@ -58,7 +59,30 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
+
+app.UseCors(builder =>
+{
+    builder
+          .WithOrigins("http://localhost:4200", "https://localhost:4200")
+          .SetIsOriginAllowedToAllowWildcardSubdomains()
+          .AllowAnyHeader()
+          .AllowCredentials()
+          .WithMethods("GET", "PUT", "POST", "DELETE", "OPTIONS")
+          .SetPreflightMaxAge(TimeSpan.FromSeconds(3600));
+
+});
 
 log.Debug("App running");
 
